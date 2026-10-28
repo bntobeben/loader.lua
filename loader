@@ -1,0 +1,260 @@
+-- Services
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- Hapus UI lama jika ada agar tidak menumpuk
+if CoreGui:FindFirstChild("MasensDevUI") then
+    CoreGui.MasensDevUI:Destroy()
+end
+
+-- ScreenGui Utama
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MasensDevUI"
+ScreenGui.Parent = CoreGui
+
+-- Frame Utama
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 650, 0, 400)
+MainFrame.Position = UDim2.new(0.5, -325, 0.5, -200)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 8)
+MainCorner.Parent = MainFrame
+
+-- Header Bar
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(1, 0, 0, 35)
+Header.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+Header.Parent = MainFrame
+
+local HeaderCorner = Instance.new("UICorner")
+HeaderCorner.CornerRadius = UDim.new(0, 8)
+HeaderCorner.Parent = Header
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -150, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "MASENSDEV  |  Checkpoint Tools"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 13
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = Header
+
+-- Badge Premium
+local PremiumBadge = Instance.new("TextLabel")
+PremiumBadge.Size = UDim2.new(0, 100, 0, 20)
+PremiumBadge.Position = UDim2.new(1, -135, 0, 7)
+PremiumBadge.BackgroundColor3 = Color3.fromRGB(180, 100, 20)
+PremiumBadge.Text = "PREMIUM 19:05:59"
+PremiumBadge.TextColor3 = Color3.fromRGB(255, 255, 255)
+PremiumBadge.Font = Enum.Font.SourceSansBold
+PremiumBadge.TextSize = 10
+PremiumBadge.Parent = Header
+
+local BadgeCorner = Instance.new("UICorner")
+BadgeCorner.CornerRadius = UDim.new(0, 4)
+BadgeCorner.Parent = PremiumBadge
+
+-- Tombol Close (X)
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 25, 0, 25)
+CloseBtn.Position = UDim2.new(1, -30, 0, 5)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.Font = Enum.Font.SourceSansBold
+CloseBtn.TextSize = 12
+CloseBtn.Parent = Header
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 4)
+CloseCorner.Parent = CloseBtn
+
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+-- Sidebar Kiri
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, 140, 1, -45)
+Sidebar.Position = UDim2.new(0, 5, 0, 40)
+Sidebar.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+Sidebar.Parent = MainFrame
+
+local SideCorner = Instance.new("UICorner")
+SideCorner.CornerRadius = UDim.new(0, 6)
+SideCorner.Parent = Sidebar
+
+-- Tombol Menu Sidebar
+local function createTabButton(name, yPos, active)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, -10, 0, 30)
+    btn.Position = UDim2.new(0, 5, 0, yPos)
+    btn.BackgroundColor3 = active and Color3.fromRGB(180, 40, 40) or Color3.fromRGB(35, 35, 42)
+    btn.Text = "  " .. name
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.SourceSans
+    btn.TextSize = 12
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.Parent = Sidebar
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 4)
+    corner.Parent = btn
+    return btn
+end
+
+createTabButton("Part List & Tools", 5, false)
+createTabButton("Checkpoints", 40, true) -- Tab aktif
+createTabButton("Scan Remote", 75, false)
+createTabButton("Settings", 110, false)
+
+-- Content Area (Kanan)
+local Content = Instance.new("Frame")
+Content.Size = UDim2.new(1, -155, 1, -45)
+Content.Position = UDim2.new(0, 150, 0, 40)
+Content.BackgroundTransparency = 1
+Content.Parent = MainFrame
+
+-- Tombol Aksi Baris Pertama
+local function createActionButton(name, xPos, color)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 95, 0, 30)
+    btn.Position = UDim2.new(0, xPos, 0, 5)
+    btn.BackgroundColor3 = color or Color3.fromRGB(45, 45, 55)
+    btn.Text = name
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextSize = 12
+    btn.Parent = Content
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 4)
+    corner.Parent = btn
+    return btn
+end
+
+local btnAutoTP = createActionButton("Auto TP", 0, Color3.fromRGB(40, 120, 60))
+local btnAutoTerbang = createActionButton("Auto Terbang", 100, Color3.fromRGB(45, 45, 55))
+local btnLoop = createActionButton("Loop: OFF", 200, Color3.fromRGB(45, 45, 55))
+local btnPosSaya = createActionButton("+ Posisi Saya", 300, Color3.fromRGB(180, 120, 20))
+local btnHapusTab = createActionButton("Hapus Tab", 400, Color3.fromRGB(140, 40, 40))
+
+-- List / Scroll Container untuk Daftar Titik Tersimpan
+local ScrollingFrame = Instance.new("ScrollingFrame")
+ScrollingFrame.Size = UDim2.new(1, 0, 1, -55)
+ScrollingFrame.Position = UDim2.new(0, 0, 0, 45)
+ScrollingFrame.BackgroundTransparency = 1
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollingFrame.ScrollBarThickness = 4
+ScrollingFrame.Parent = Content
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 5)
+UIListLayout.Parent = ScrollingFrame
+
+-- Tabel Penyimpanan Titik
+local SavedPoints = {}
+
+-- Fungsi untuk memperbarui tampilan daftar titik
+local function updatePointList()
+    -- Hapus elemen lama di UI
+    for _, child in ipairs(ScrollingFrame:GetChildren()) do
+        if child:IsA("Frame") then
+            child:Destroy()
+        end
+    end
+    
+    -- Buat ulang baris berdasarkan data SavedPoints
+    for index, data in ipairs(SavedPoints) do
+        local ItemRow = Instance.new("Frame")
+        ItemRow.Size = UDim2.new(1, -5, 0, 35)
+        ItemRow.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
+        ItemRow.Parent = ScrollingFrame
+        
+        local RowCorner = Instance.new("UICorner")
+        RowCorner.CornerRadius = UDim.new(0, 4)
+        RowCorner.Parent = ItemRow
+        
+        -- Label Nama & Koordinat
+        local LabelInfo = Instance.new("TextLabel")
+        LabelInfo.Size = UDim2.new(1, -160, 1, 0)
+        LabelInfo.Position = UDim2.new(0, 10, 0, 0)
+        LabelInfo.BackgroundTransparency = 1
+        LabelInfo.Text = string.format("%d   |   CP%d   |   Vector3.new(%.2f, %.2f, %.2f)", index-1, index, data.X, data.Y, data.Z)
+        LabelInfo.TextColor3 = Color3.fromRGB(220, 220, 220)
+        LabelInfo.Font = Enum.Font.SourceSans
+        LabelInfo.TextSize = 11
+        LabelInfo.TextXAlignment = Enum.TextXAlignment.Left
+        LabelInfo.Parent = ItemRow
+        
+        -- Tombol TP Cepat per Baris
+        local tpBtn = Instance.new("TextButton")
+        tpBtn.Size = UDim2.new(0, 35, 0, 25)
+        tpBtn.Position = UDim2.new(1, -75, 0, 5)
+        tpBtn.BackgroundColor3 = Color3.fromRGB(40, 100, 160)
+        tpBtn.Text = "TP"
+        tpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        tpBtn.Font = Enum.Font.SourceSansBold
+        tpBtn.TextSize = 11
+        tpBtn.Parent = ItemRow
+        
+        local tpCorner = Instance.new("UICorner")
+        tpCorner.CornerRadius = UDim.new(0, 3)
+        tpCorner.Parent = tpBtn
+        
+        tpBtn.MouseButton1Click:Connect(function()
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                char.HumanoidRootPart.CFrame = CFrame.new(data)
+            end
+        end)
+        
+        -- Tombol Hapus per Baris (X)
+        local delBtn = Instance.new("TextButton")
+        delBtn.Size = UDim2.new(0, 25, 0, 25)
+        delBtn.Position = UDim2.new(1, -35, 0, 5)
+        delBtn.BackgroundColor3 = Color3.fromRGB(160, 40, 40)
+        delBtn.Text = "X"
+        delBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        delBtn.Font = Enum.Font.SourceSansBold
+        delBtn.TextSize = 11
+        delBtn.Parent = ItemRow
+        
+        local delCorner = Instance.new("UICorner")
+        delCorner.CornerRadius = UDim.new(0, 3)
+        delCorner.Parent = delBtn
+        
+        delBtn.MouseButton1Click:Connect(function()
+            table.remove(SavedPoints, index)
+            updatePointList()
+        end)
+    end
+    
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #SavedPoints * 40)
+end
+
+-- Fungsi Tombol "+ Posisi Saya"
+btnPosSaya.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        table.insert(SavedPoints, char.HumanoidRootPart.Position)
+        updatePointList()
+    end
+end)
+
+-- Tombol Hapus Semua Tab
+btnHapusTab.MouseButton1Click:Connect(function()
+    SavedPoints = {}
+    updatePointList()
+end)
